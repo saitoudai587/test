@@ -5,20 +5,28 @@
     <div id="preview"></div>
 
     <script>
-      if ('launchQueue' in window) {
+      async function handleFiles(files) {
+        for (const file of files) {
+          const url = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = url;
+          img.style.maxWidth = "100%";
+          document.getElementById("preview").appendChild(img);
+        }
+      }
+
+      // Web Share Target API (POST)
+      if (window.launchQueue) {
         launchQueue.setConsumer(async (launchParams) => {
-          if (!launchParams.files.length) return;
+          if (!launchParams.files || launchParams.files.length === 0) return;
 
-          for (const fileHandle of launchParams.files) {
-            const file = await fileHandle.getFile();
-            const url = URL.createObjectURL(file);
-
-            const img = document.createElement("img");
-            img.src = url;
-            img.style.maxWidth = "100%";
-
-            document.getElementById("preview").appendChild(img);
+          const files = [];
+          for (const handle of launchParams.files) {
+            const file = await handle.getFile();
+            files.push(file);
           }
+
+          handleFiles(files);
         });
       }
     </script>
