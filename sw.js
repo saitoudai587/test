@@ -1,7 +1,7 @@
-self.addEventListener("install", (event) => {
-  console.log("Service Worker installed");
-});
-
 self.addEventListener("fetch", (event) => {
-  // とりあえず何もしない基本形
+  // Share Target の POST を受け取る
+  if (event.request.method === "POST" &&
+      new URL(event.request.url).pathname === "/share.html") {
+    event.respondWith(Response.redirect("/share.html"));
+  }
 });
