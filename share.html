@@ -2,12 +2,19 @@
 <html>
   <body>
     <h1>画像を受け取りました</h1>
+    <div id="log" style="white-space: pre-wrap; background: #eee; padding: 10px;"></div>
     <div id="preview"></div>
 
     <script>
+      function log(msg) {
+        const el = document.getElementById("log");
+        el.textContent += msg + "\n";
+      }
+
       async function handleFiles(files) {
-        console.log("handleFiles:", files);
+        log("handleFiles: " + files.length + " files");
         for (const file of files) {
+          log("file: " + file.name + " (" + file.type + ")");
           const url = URL.createObjectURL(file);
           const img = document.createElement("img");
           img.src = url;
@@ -16,13 +23,12 @@
         }
       }
 
-      // launchQueue が存在するかチェック
       if ("launchQueue" in window && window.launchQueue) {
         window.launchQueue.setConsumer(async (launchParams) => {
-          console.log("launchParams:", launchParams);
+          log("launchParams received");
 
           if (!launchParams.files || launchParams.files.length === 0) {
-            console.log("No files received");
+            log("No files received");
             return;
           }
 
@@ -30,17 +36,17 @@
           for (const handle of launchParams.files) {
             try {
               const file = await handle.getFile();
-              console.log("Got file:", file);
+              log("Got file: " + file.name);
               files.push(file);
             } catch (e) {
-              console.error("getFile error:", e);
+              log("getFile error: " + e);
             }
           }
 
           handleFiles(files);
         });
       } else {
-        console.log("launchQueue not supported or not triggered");
+        log("launchQueue not supported or not triggered");
       }
     </script>
   </body>
