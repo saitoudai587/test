@@ -1,34 +1,31 @@
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>画像を受け取りました</h1>
-    <div id="preview"></div>
+<script>
+  async function handleFiles(files) {
+    console.log("handleFiles:", files); // ← 追加
+    for (const file of files) {
+      const url = URL.createObjectURL(file);
+      const img = document.createElement("img");
+      img.src = url;
+      img.style.maxWidth = "100%";
+      document.getElementById("preview").appendChild(img);
+    }
+  }
 
-    <script>
-      async function handleFiles(files) {
-        for (const file of files) {
-          const url = URL.createObjectURL(file);
-          const img = document.createElement("img");
-          img.src = url;
-          img.style.maxWidth = "100%";
-          document.getElementById("preview").appendChild(img);
-        }
+  if ("launchQueue" in window) {
+    launchQueue.setConsumer(async (launchParams) => {
+      console.log("launchParams:", launchParams); // ← 追加
+      if (!launchParams.files || launchParams.files.length === 0) {
+        console.log("No files received");
+        return;
       }
 
-      // Web Share Target API (POST)
-      if (window.launchQueue) {
-        launchQueue.setConsumer(async (launchParams) => {
-          if (!launchParams.files || launchParams.files.length === 0) return;
-
-          const files = [];
-          for (const handle of launchParams.files) {
-            const file = await handle.getFile();
-            files.push(file);
-          }
-
-          handleFiles(files);
-        });
+      const files = [];
+      for (const handle of launchParams.files) {
+        const file = await handle.getFile();
+        console.log("Got file:", file); // ← 追加
+        files.push(file);
       }
-    </script>
-  </body>
-</html>
+
+      handleFiles(files);
+    });
+  }
+</script>
