@@ -2,52 +2,27 @@
 <html>
   <body>
     <h1>画像を受け取りました</h1>
-    <div id="log" style="white-space: pre-wrap; background: #eee; padding: 10px;"></div>
+
     <div id="preview"></div>
 
     <script>
-      function log(msg) {
-        const el = document.getElementById("log");
-        el.textContent += msg + "\n";
-      }
+      (async () => {
+        // Service Worker が保存した画像を取得
+        const cache = await caches.open("shared-files");
+        const res = await cache.match("/test/shared-image");
 
-      async function handleFiles(files) {
-        log("handleFiles: " + files.length + " files");
-        for (const file of files) {
-          log("file: " + file.name + " (" + file.type + ")");
-          const url = URL.createObjectURL(file);
+        if (res) {
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+
           const img = document.createElement("img");
           img.src = url;
           img.style.maxWidth = "100%";
           document.getElementById("preview").appendChild(img);
+        } else {
+          document.getElementById("preview").textContent = "画像がありません";
         }
-      }
-
-      if ("launchQueue" in window && window.launchQueue) {
-        window.launchQueue.setConsumer(async (launchParams) => {
-          log("launchParams received");
-
-          if (!launchParams.files || launchParams.files.length === 0) {
-            log("No files received");
-            return;
-          }
-
-          const files = [];
-          for (const handle of launchParams.files) {
-            try {
-              const file = await handle.getFile();
-              log("Got file: " + file.name);
-              files.push(file);
-            } catch (e) {
-              log("getFile error: " + e);
-            }
-          }
-
-          handleFiles(files);
-        });
-      } else {
-        log("launchQueue not supported or not triggered");
-      }
+      })();
     </script>
   </body>
 </html>
