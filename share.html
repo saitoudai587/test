@@ -1,31 +1,47 @@
-<script>
-  async function handleFiles(files) {
-    console.log("handleFiles:", files); // ← 追加
-    for (const file of files) {
-      const url = URL.createObjectURL(file);
-      const img = document.createElement("img");
-      img.src = url;
-      img.style.maxWidth = "100%";
-      document.getElementById("preview").appendChild(img);
-    }
-  }
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>画像を受け取りました</h1>
+    <div id="preview"></div>
 
-  if ("launchQueue" in window) {
-    launchQueue.setConsumer(async (launchParams) => {
-      console.log("launchParams:", launchParams); // ← 追加
-      if (!launchParams.files || launchParams.files.length === 0) {
-        console.log("No files received");
-        return;
+    <script>
+      async function handleFiles(files) {
+        console.log("handleFiles:", files);
+        for (const file of files) {
+          const url = URL.createObjectURL(file);
+          const img = document.createElement("img");
+          img.src = url;
+          img.style.maxWidth = "100%";
+          document.getElementById("preview").appendChild(img);
+        }
       }
 
-      const files = [];
-      for (const handle of launchParams.files) {
-        const file = await handle.getFile();
-        console.log("Got file:", file); // ← 追加
-        files.push(file);
-      }
+      // launchQueue が存在するかチェック
+      if ("launchQueue" in window && window.launchQueue) {
+        window.launchQueue.setConsumer(async (launchParams) => {
+          console.log("launchParams:", launchParams);
 
-      handleFiles(files);
-    });
-  }
-</script>
+          if (!launchParams.files || launchParams.files.length === 0) {
+            console.log("No files received");
+            return;
+          }
+
+          const files = [];
+          for (const handle of launchParams.files) {
+            try {
+              const file = await handle.getFile();
+              console.log("Got file:", file);
+              files.push(file);
+            } catch (e) {
+              console.error("getFile error:", e);
+            }
+          }
+
+          handleFiles(files);
+        });
+      } else {
+        console.log("launchQueue not supported or not triggered");
+      }
+    </script>
+  </body>
+</html>
