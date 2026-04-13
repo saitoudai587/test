@@ -7,7 +7,7 @@
   "theme_color": "#ffffff",
 
   "share_target": {
-    "action": "/share.html",
+    "action": "/test/share.html",
     "method": "POST",
     "enctype": "multipart/form-data",
     "params": {
