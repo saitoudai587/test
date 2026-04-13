@@ -1,7 +1,9 @@
 self.addEventListener("fetch", (event) => {
-  // Share Target の POST を受け取る
+  const url = new URL(event.request.url);
+
   if (event.request.method === "POST" &&
-      new URL(event.request.url).pathname === "/test/share.html") {
+      url.pathname === "/test/share.html") {
     event.respondWith(Response.redirect("/test/share.html"));
+    return;
   }
 });
