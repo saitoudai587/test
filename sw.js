@@ -7,11 +7,13 @@ self.addEventListener("fetch", (event) => {
 
     event.respondWith((async () => {
       const formData = await event.request.formData();
-      const file = formData.get("file"); // ← 画像がここに入る
+      const file = formData.get("file"); // ← 共有された画像
 
+      // 画像をキャッシュに保存
       const cache = await caches.open("shared-files");
       await cache.put("/test/shared-image", new Response(file));
 
+      // GET にリダイレクトして share.html を表示
       return Response.redirect("/test/share.html");
     })());
   }
