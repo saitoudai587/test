@@ -25,18 +25,26 @@
       font-size: 16px;
       border: none;
       border-radius: 6px;
-      background-color: #0078d4;
+      background-color: #1d9bf0;
       color: white;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #005fa3;
+      background-color: #0f7acb;
     }
   </style>
+
+  <script>
+    function openXPost() {
+      const text = encodeURIComponent("サンプル投稿です！");
+      const url = "https://x.com/intent/post?text=" + text;
+      window.open(url, "_blank");
+    }
+  </script>
 </head>
 <body>
   <h1>サンプルページ</h1>
-  <button>サンプルボタン</button>
+  <button onclick="openXPost()">サンプルボタン</button>
 </body>
 </html>
