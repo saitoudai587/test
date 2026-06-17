@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ファイル選択テスト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    #fileName {
+      margin-top: 12px;
+      font-size: 14px;
+      color: #333;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <h1>ファイル選択テスト</h1>
+
+  <p>下の「テスト」ボタンをタップして、スマホ内のファイルを選択してください。</p>
+
+  <!-- 実際のファイル入力（非表示） -->
+  <input type="file" id="fileInput" style="display:none;">
+
+  <!-- ユーザーが押すボタン -->
+  <button id="testButton">テスト</button>
+
+  <!-- 選択されたファイル名を表示する場所 -->
+  <div id="fileName">まだファイルは選択されていません。</div>
+
+  <script>
+    const fileInput  = document.getElementById('fileInput');
+    const testButton = document.getElementById('testButton');
+    const fileNameEl = document.getElementById('fileName');
+
+    // ボタンをタップしたら、隠してある input[type="file"] をクリック
+    testButton.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // ファイルが選択されたら、ファイル名を表示
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        fileNameEl.textContent = '選択されたファイル: ' + file.name;
+      } else {
+        fileNameEl.textContent = 'ファイルは選択されませんでした。';
+      }
+    });
+  </script>
+</body>
+</html>
