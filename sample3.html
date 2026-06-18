@@ -12,6 +12,7 @@
     button {
       padding: 10px 20px;
       font-size: 16px;
+      margin-right: 10px;
     }
     #fileName {
       margin-top: 12px;
@@ -32,6 +33,9 @@
   <!-- ユーザーが押すボタン -->
   <button id="testButton">テスト</button>
 
+  <!-- ★ 追加：JSON をダウンロードするボタン -->
+  <button id="downloadBtn">ダウンロード</button>
+
   <!-- 選択されたファイル名を表示する場所 -->
   <div id="fileName">まだファイルは選択されていません。</div>
 
@@ -39,6 +43,7 @@
     const fileInput  = document.getElementById('fileInput');
     const testButton = document.getElementById('testButton');
     const fileNameEl = document.getElementById('fileName');
+    const downloadBtn = document.getElementById('downloadBtn');
 
     // ボタンをタップしたら、隠してある input[type="file"] をクリック
     testButton.addEventListener('click', () => {
@@ -53,6 +58,26 @@
       } else {
         fileNameEl.textContent = 'ファイルは選択されませんでした。';
       }
+    });
+
+    // ★ JSON を生成してダウンロード
+    downloadBtn.addEventListener('click', () => {
+      const data = {
+        name: "Taro",
+        age: 25,
+        isStudent: false
+      };
+
+      const jsonStr = JSON.stringify(data, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "data.json";
+      a.click();
+
+      URL.revokeObjectURL(url);
     });
   </script>
 </body>
